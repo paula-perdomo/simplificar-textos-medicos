@@ -1,1 +1,6 @@
-# simplificar-textos-medicos
+## Simplificación de Textos Médicos: Un Análisis Comparativo de Modelos de Lenguaje y el Despliegue de una Herramienta Web para Profesionales de la Salud
+Este es el proyecto final de grado de la maestría en inteligencia artificial (MaIA) de la Universidad de los Andes. Se entrenó un modelo Llama fine-tuned con técnica LoRA para la tarea de generación de resumenes simplificados de texto médico. Además, se entrenó un clasificador binario para clasificar si un texto es técnico o si ya ha sido simplificado. Finalmente, se buscó desarrollar un sistema robusto para evaluar dichos modelos, por lo que se compararon diferentes medidas de legibilidad como SMOG, FKG y FRE; también se midió la relevancia y factualidad con BERTScore y AlignScore, respectivamente.
+Con estos modelos, se creó una API donde en un primer paso se utiliza el clasificador que define si el texto de entrada es simplificado o técnico, y si es este último, retorna el texto simplificado (utilizando el modelo fine-tuned). Junto con el texto simplificado generado se emiten las medidas de legibilidad del texto. Esta herramienta fue creada teniendo en mente al personal médico como usuario final.
+### Instrucciones básicas de uso de la interfaz
+
+### Enlaces relevantes, dependencias, entorno de ejecución, pasos de despliegue, credenciales de ejemplo (si aplica) y ejemplos de uso.
