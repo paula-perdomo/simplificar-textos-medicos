@@ -1,8 +1,9 @@
 import uvicorn
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from core.model_loader import load_ai_model, generate_pls_from_model
 from core.class_model import GenerateRequest, GenerateResponse, ErrorResponse, ReadabilityScores, AllScores
-from core.scoring import get_bertscore, get_alignscore, get_cli, get_fre, get_gfi, get_smog, get_fkgl, get_dcrs, initialize_align_scorer
+from core.scoring import get_scores
 from core.prompt_template import PROMPT_TEMPLATE
 
 
@@ -18,11 +19,12 @@ app = FastAPI(
     title="BioMedical Text simplification",
     description="An API to generate and evaluate Plain Language Summaries (PLS) from biomedical abstracts.",
 )
-
-# Initialize AlignScore model
-initialize_align_scorer()
-    
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],     # Allow requests from any origin
+    allow_methods=["*"],     # Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],     # Allow all headers in the request
+)
 
 # --- 6. API Endpoint ---
 
@@ -48,28 +50,16 @@ async def generate_pls(request: GenerateRequest):
         print(f"PLS: {generated_pls}")
 
         # --- Step 3: Calculate Scores ---
-        
-        # Relevance
-        bert_f1 = get_bertscore(generated_pls, abstract_text)
-        
-        # Factuality
-        align_score = get_alignscore(generated_pls, abstract_text)
-        
+                
         # Readability
-        readability_scores = ReadabilityScores(
-            CLI=get_cli(generated_pls),
-            FRE=get_fre(generated_pls),
-            GFI=get_gfi(generated_pls),
-            SMOG=get_smog(generated_pls),
-            FKGL=get_fkgl(generated_pls),
-            DCRS=get_dcrs(generated_pls)
-        )
+        original_scores = get_scores(abstract_text)
+        generated_scores = get_scores(generated_pls)
+        
         
         # --- Step 4: Bundle Scores ---
         all_scores = AllScores(
-            relevance_bertscore_f1=bert_f1,
-            factuality_alignscore=align_score,
-            readability=readability_scores
+            original=original_scores,
+            generated=generated_scores
         )
 
         # --- Step 5: Return Success Response ---

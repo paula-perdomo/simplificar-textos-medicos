@@ -17,9 +17,8 @@ class ReadabilityScores(BaseModel):
 
 class AllScores(BaseModel):
     """Model for all evaluation scores."""
-    relevance_bertscore_f1: float
-    factuality_alignscore: float
-    readability: ReadabilityScores
+    original: ReadabilityScores
+    generated: ReadabilityScores
 
 class GenerateResponse(BaseModel):
     """The standard success response model."""
