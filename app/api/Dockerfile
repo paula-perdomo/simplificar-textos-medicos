@@ -7,6 +7,9 @@ FROM python:3.10-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 # Ensures logs and output are sent straight to the console
 ENV PYTHONUNBUFFERED 1
+# Set model name and path
+ENV MODEL_NAME="Llama-3.2-3B-Instruct"
+ENV MODEL_PATH="meta-llama/Llama-3.2-3B-Instruct"
 
 # 3. Set Working Directory
 WORKDIR /app

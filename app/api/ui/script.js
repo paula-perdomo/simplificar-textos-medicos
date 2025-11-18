@@ -1,10 +1,14 @@
 const apiUrl = 'http://127.0.0.1:8000'
 const generateEnpoint = '/generate_pls'
+const modelNameEndpoint = '/get_model_name'
+
 
 const themeButton = document.getElementById('theme-button');
 const generateButton = document.getElementById('generate-button');
 const scoresTable = document.getElementById('scores-table');
 const outputArea = document.getElementById('output-area');
+const introTextParagraph = document.getElementById('intro-text');
+
 
 
 window.onload = init;
@@ -13,6 +17,33 @@ window.onload = init;
 function init() {
     themeButton.addEventListener('click', toggleTheme);
     generateButton.addEventListener('click', generateSummary); 
+    loadModelName();
+
+}
+
+async function loadModelName() {
+    const response = await getModelName();
+    if (response.status == undefined) { // Success
+        introTextParagraph.innerText = response + ', ';
+
+    } else { // Failure
+        alert('Error loading model name: ' + response.status + '\n' +response.message)
+    }
+}
+
+async function getModelName(){
+
+    const response = await fetch(`${apiUrl}${modelNameEndpoint}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    if (!response.ok) {
+        return {status: response.status, message: response.statusText};
+    }
+    const data = await response.json();
+    return data;
 }
 
 async function generateSummary() {

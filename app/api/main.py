@@ -1,4 +1,5 @@
 import uvicorn
+import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from core.model_loader import load_ai_model, generate_pls_from_model
@@ -6,12 +7,19 @@ from core.class_model import GenerateRequest, GenerateResponse, ErrorResponse, R
 from core.scoring import get_scores
 from core.prompt_template import PROMPT_TEMPLATE
 
-
-
 # Load model
 
-#model_path = "./model/llama_3_2_3b"
-load_ai_model("meta-llama/Llama-3.2-3B-Instruct")
+try:
+    
+    model_name = os.environ['MODEL_NAME']
+    model_path = os.environ['MODEL_PATH']
+    
+except:
+
+    model_name = "Llama 3.2 3B Instruct"
+    model_path = "meta-llama/Llama-3.2-3B-Instruct"
+
+load_ai_model(model_path)
 
 # --- 1. Initialize App and Models ---
 
@@ -27,6 +35,13 @@ app.add_middleware(
 )
 
 # --- 6. API Endpoint ---
+
+@app.get("/get_model_name",
+         response_model=str, 
+          responses={500: {"model": ErrorResponse}})
+async def get_model_name():
+    return model_name
+
 
 @app.post("/generate_pls", 
           response_model=GenerateResponse, 
@@ -89,4 +104,4 @@ if __name__ == "__main__":
     This allows you to run the app directly using `python main.py`
     """
     
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="debug")
+    uvicorn.run(app, host="127.0.0.1", port=8000)
