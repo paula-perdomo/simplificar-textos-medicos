@@ -2,24 +2,41 @@ import uvicorn
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from core.model_loader import load_ai_model, generate_pls_from_model
+from core.model_loader import load_ai_model, generate_pls_from_model, download_from_s3
 from core.class_model import GenerateRequest, GenerateResponse, ErrorResponse, ReadabilityScores, AllScores
 from core.scoring import get_scores
+from core.classifier_model import classify_text, load_classifier_model
 from core.prompt_template import PROMPT_TEMPLATE
+from core.secret_manager import get_secret
+from core.text_cleaning import clean_text
+from huggingface_hub import login
 
-# Load model
+# Load model and secrets
+model_name = "Llama-3.2-3B-Instruct"
+model_path = "meta-llama/Llama-3.2-3B-Instruct"
+model_source = os.environ.get('MODEL_SOURCE')
 
-try:
-    
-    model_name = os.environ['MODEL_NAME']
-    model_path = os.environ['MODEL_PATH']
-    
-except:
+if model_source == 's3':
+    print("Downloading model from S3...")
+    download_from_s3()
+elif model_source == 'huggingface':
+    print("Logging in to HuggingFace...")
+    hf_token_source = os.environ.get('HF_TOKEN_SOURCE')
+    if hf_token_source == 'aws':        
+        hf_token =  get_secret('huggingface_token')
+        login(token=hf_token)
+    elif hf_token_source == 'local':
+        login()
+    else:
+        raise HTTPException(status_code=511, detail="HF_TOKEN source not provided")
 
-    model_name = "Llama 3.2 3B Instruct"
-    model_path = "meta-llama/Llama-3.2-3B-Instruct"
+if os.environ.get('MODEL_PATH'):
+    model_name = os.environ.get('MODEL_NAME')
+    model_path = os.environ.get('MODEL_PATH')
+
 
 load_ai_model(model_path)
+load_classifier_model()
 
 # --- 1. Initialize App and Models ---
 
@@ -52,11 +69,22 @@ async def generate_pls(request: GenerateRequest):
     """
     try:
         print("Init Generating PLS...")
-        
-        # --- Step 2: Generate PLS (Simulated) ---
         abstract_text = request.text
         if not abstract_text.strip():
             raise HTTPException(status_code=400, detail="Input text cannot be empty.")
+        
+        # --- Step 0: Clean text ---
+        abstract_text = clean_text(abstract_text)
+        
+        # --- Step 1: Classify Text ---
+        pred, prob = classify_text(abstract_text)
+        print("Text classification: ", pred, " Probability of class 1 (PLS): ", prob)
+        if pred == 'PLS':
+            raise HTTPException(status_code=422, detail="Input text cannot be PLS.")
+
+        
+        # --- Step 2: Generate PLS (Simulated) ---
+        
         
         # Generate PLS
         print("Generating PLS with real Llama 3.2 3B model...")

@@ -17,12 +17,15 @@ c:\\Users\\perdo\\Documents\\GitHub\\simplificar-textos-medicos\\app\\api\\
 ├───core\\
 │   ├───__init__.py
 │   ├───class_model.py
+│   ├───classifier_model.py
 │   ├───model_loader.py
 │   ├───prompt_template.py
 │   ├───scoring.py
+│   ├───secret_manager.py
+│   ├───text_cleaning.py
 │   └───__pycache__\\
 ├───model\\
-│   └───llama_3_2_3b\\...
+│   └───pls_classifier\\...
 └───ui\\
     ├───index.html
     ├───pico.jade.min.css
@@ -37,10 +40,14 @@ c:\\Users\\perdo\\Documents\\GitHub\\simplificar-textos-medicos\\app\\api\\
 -   **`requirements.txt`**: Lists the Python dependencies required for the project.
 -   **`core/`**: This directory contains the core logic of the application.
     -   **`class_model.py`**: Defines the Pydantic models for the request and response bodies, ensuring data validation and serialization.
+    -   **`classifier_model.py`**: Handles the loading and execution of the text classification model.
     -   **`model_loader.py`**: Handles the loading of the language model and tokenizer.
     -   **`prompt_template.py`**: Contains the prompt template used to instruct the language model on how to generate the PLS.
     -   **`scoring.py`**: Contains the logic for calculating readability scores.
+    -   **`secret_manager.py`**: Manages secrets from AWS Secret Manager.
+    -   **`text_cleaning.py`**: Provides functions for cleaning text before processing.
 -   **`model/`**: This directory is intended to store the language model files.
+    -   **`pls_classifier/`**: Contains the text classification model.
 -   **`ui/`**: This directory contains the user interface for the application.
     -   **`index.html`**: The main HTML file for the UI.
     -   **`script.js`**: The JavaScript file that handles the interaction with the API.
@@ -50,9 +57,14 @@ c:\\Users\\perdo\\Documents\\GitHub\\simplificar-textos-medicos\\app\\api\\
 
 The following environment variables are used to configure the application:
 
--   **`MODEL_PATH`**: The path to the language model. This can be a local path or a model identifier from the Hugging Face Hub.
+-   **`S3_BUCKET_NAME`**: The name of the S3 bucket where the model files are stored. This is required if `MODEL_SOURCE` is `s3`.
+-   **`S3_PREFIX`**: The prefix of the S3 bucket where the model files are stored. This is required if `MODEL_SOURCE` is `s3`.
+-   **`S3_REGION`**: The region of the S3 bucket. This is required if `MODEL_SOURCE` is `s3`.
+-   **`MODEL_PATH`**: The path to the language model. If `MODEL_SOURCE` is `s3`, this can be a local path: `"./model/llm/"`. If `MODEL_SOURCE` is `huggingface`, this can be a model identifier from the Hugging Face Hub: `"meta-llama/Llama-3.2-3B-Instruct"`.
 -   **`MODEL_NAME`**: The name of the model being used. This is displayed in the UI.
--   **`HF_TOKEN`**: Your Hugging Face authentication token. This is required to download models from the Hugging Face Hub.
+-   **`MODEL_SOURCE`**: The source of the model. It can be `s3` or `huggingface`.
+-   **`HF_TOKEN_SOURCE`**: The source of the Hugging Face authentication token. It can be `local` or `aws`.
+-   **`HF_TOKEN`**: If `huggingface` is the `MODEL_SOURCE`, this is the Hugging Face authentication token. This is required to download models from the Hugging Face Hub. If `HF_TOKEN_SOURCE` is `'local'`, you must provide the value of this variable. If `HF_TOKEN_SOURCE` is `'aws'` It will be retrieved from AWS Secret Manager.
 
 ## How to Run
 
@@ -81,9 +93,14 @@ The following environment variables are used to configure the application:
 2.  **Set the environment variables:**
 
     ```bash
-    export MODEL_PATH="meta-llama/Llama-3.2-3B-Instruct"
-    export MODEL_NAME="Llama 3.2 3B Instruct"
-    export HF_TOKEN="your_hugging_face_token"
+    export S3_BUCKET_NAME="maia-grupo-9"
+    export S3_PREFIX="/models/sft2-merged/"
+    export S3_REGION="us-east-2"
+    export MODEL_NAME="Llama-3.2-3B-Instruct"
+    export MODEL_PATH="./model/llm/"
+    export MODEL_SOURCE="s3"
+    
+    
     ```
 
 3.  **Run the application:**
@@ -94,4 +111,4 @@ The following environment variables are used to configure the application:
 The API will be available at `http://127.0.0.1:8000`.
 The UI will be available by opening the `ui/index.html` file in your browser.
 
-This README file was generated using AI.
+This README file was generated with help of AI.

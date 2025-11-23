@@ -16,7 +16,7 @@ def get_scores(text: str) -> ReadabilityScores:
      for paragraph in segmenter.analyze(text))
     print(tokenized)
 
-    results = readability.getmeasures(text, lang='en')
+    results = readability.getmeasures(tokenized, lang='en')
     scores = ReadabilityScores(
         CLI=results['readability grades']['Coleman-Liau'],
         FRE=results['readability grades']['FleschReadingEase'],         

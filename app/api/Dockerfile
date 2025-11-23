@@ -7,9 +7,15 @@ FROM python:3.10-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 # Ensures logs and output are sent straight to the console
 ENV PYTHONUNBUFFERED 1
-# Set model name and path
+# Set S3 credentials
+
+ENV S3_BUCKET_NAME="maia-grupo-9"
+ENV S3_PREFIX="/models/sft2-merged/"
+ENV S3_REGION="us-east-2"
 ENV MODEL_NAME="Llama-3.2-3B-Instruct"
-ENV MODEL_PATH="meta-llama/Llama-3.2-3B-Instruct"
+ENV MODEL_PATH="./model/llm/"
+ENV MODEL_SOURCE="s3"
+ENV HF_TOKEN_SOURCE="aws"
 
 # 3. Set Working Directory
 WORKDIR /app
@@ -27,15 +33,8 @@ RUN apt-get update \
 # This layer only rebuilds if requirements.txt changes.
 COPY requirements.txt .
 
-# Install packages, using --no-cache-dir to reduce image size
+# 6. Install packages, using --no-cache-dir to reduce image size
 RUN pip install --no-cache-dir -r requirements.txt
-
-# 6. Add Hugging Face Login (Secure Method)
-# This command tells Docker to securely mount the secret file we will provide.
-# The token is used for the login and then discarded.
-# It is NEVER saved in the image layers.
-RUN --mount=type=secret,id=hf_token \
-    huggingface-cli login --token $(cat /run/secrets/hf_token)
 
 # 7. Copy Application Code
 # Copy the rest of the app's source code (main.py, models, etc.)

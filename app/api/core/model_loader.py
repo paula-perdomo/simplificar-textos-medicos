@@ -1,18 +1,52 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM, GenerationConfig, pipeline, TextStreamer
 import torch
 from fastapi import HTTPException
+import boto3
+import os
+
 
 llama_tokenizer, llama_model = None, None
 
+def download_from_s3():
+    region_name = os.environ['AWS_REGION']
+    s3 = boto3.client('s3', region_name=region_name)
+    bucket_name = os.environ['S3_BUCKET_NAME']
+    s3_prefix = os.environ['S3_PREFIX']
+
+    # Example: Download a tokenizer file
+    local_path = os.environ['MODEL_PATH']
+
+    # List objects with the specified prefix
+    paginator = s3.get_paginator('list_objects_v2')
+    pages = paginator.paginate(Bucket=bucket_name, Prefix=s3_prefix)
+
+    for page in pages:
+        if 'Contents' in page:
+            for obj in page['Contents']:
+                s3_object_key = obj['Key']
+                # Construct local file path, preserving directory structure
+                relative_path = os.path.relpath(s3_object_key, s3_prefix)
+                local_file_path = os.path.join(local_path, relative_path)
+
+                # Create subdirectories if necessary
+                os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
+
+                print(f"Downloading {s3_object_key} to {local_file_path}")
+                s3.download_file(bucket_name, s3_object_key, local_file_path)
+    
+    print("Download from s3 complete.")
+
+
+
 # --- 4. Model Loading and Generation (Simulated) ---
 
-def load_ai_model(model_path: str = "./model"):
+def load_ai_model(model_path):
     """
-    Loads Llama 3.2 3B Model    
+    Loads AI Model    
     """
     global llama_tokenizer, llama_model    
 
-    # --- Llama 3.2 3B Model (for PLS Generation) ---
+    # --- AI Model (for PLS Generation) ---
     try:
        
         llama_model = AutoModelForCausalLM.from_pretrained(model_path, 
@@ -33,16 +67,14 @@ def load_ai_model(model_path: str = "./model"):
         print(f"✅ Model loaded. Main device: {llama_model.device}")
 
     except Exception as e:
-        print(f"FATAL: Could not load Llama 3 tokenizer. Error: {e}")
+        print(f"FATAL: Could not load  tokenizer. Error: {e}")
         llama_tokenizer = None
         llama_model = None
-
-    return llama_tokenizer, llama_model
 
 
 def generate_pls_from_model(abstract: str, prompt_template: str) -> str:
     """
-    Uses the loaded Llama 3model to generate the PLS text.
+    Uses the loaded model to generate the PLS text.
     """
     pls_text = ""
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -50,40 +82,8 @@ def generate_pls_from_model(abstract: str, prompt_template: str) -> str:
     if llama_model is None or llama_tokenizer is None:
         print("model or tokenizer not loaded.")
         raise HTTPException(status_code=500, detail="model or tokenizer not loaded.")
-    """
-    # 1. Format the full prompt
-    full_prompt = prompt_template.format(text=abstract)
-
-    # 3. Tokenize the input
-    inputs = llama_tokenizer(full_prompt, return_tensors="pt", padding=True, truncation=True).to(llama_model.device)
-
-    gen_config = GenerationConfig(
-        max_new_tokens=1024,
-        temperature=0.3,            # salida más determinista
-        top_p=0.9,
-        do_sample=False,            # greedy decoding (sin sampling)
-        eos_token_id=llama_tokenizer.eos_token_id,
-        pad_token_id=llama_tokenizer.pad_token_id,
-        repetition_penalty=1.8,     # penaliza repeticiones
-        no_repeat_ngram_size=4,     # evita repeticiones de frases
-    )
-
-    prompt_token_length = inputs["input_ids"].shape[1]
-
-    llama_model.eval()
-
-    with torch.no_grad():
-        outputs = llama_model.generate(**inputs, generation_config=gen_config)
-        print(outputs.shape)
-
-    new_tokens = outputs[0, prompt_token_length:]
-    print(len(new_tokens))
-
-    # Decode the generated part
-    generated_text = llama_tokenizer.decode(new_tokens, skip_special_tokens=True)
-    """
-
-    # 1. Create the Llama 3 chat message format
+   
+    # 1. Create the Llama 3 Instruct chat message format
     # The prompt template is the "user" message.
     messages = [
         {"role": "system", "content": "You are an expert assistant specialized in creating Plain Language Summaries (PLS) from biomedical texts."},
@@ -102,8 +102,9 @@ def generate_pls_from_model(abstract: str, prompt_template: str) -> str:
     print(f"Data tensor is on: {inputs.device}") # This MUST match the model's device
 
 
-    gen_config = GenerationConfig(        
-        max_new_tokens=100,
+    gen_config = GenerationConfig(    
+        min_new_tokens=500,    
+        max_new_tokens=900,
         temperature=0.3,
         top_p=0.9,        
         do_sample=False,
