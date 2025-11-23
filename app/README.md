@@ -5,7 +5,7 @@ This API provides a service to generate and evaluate Plain Language Summaries (P
 ## Folder Structure
 
 ```
-c:\\Users\\perdo\\Documents\\GitHub\\simplificar-textos-medicos\\app\\api\\
+c:\\Users\\perdo\\Documents\\GitHub\\simplificar-textos-medicos\\app\\
 ├───__init__.py
 ├───.gitignore
 ├───Dockerfile
@@ -99,6 +99,8 @@ The following environment variables are used to configure the application:
     export MODEL_NAME="Llama-3.2-3B-Instruct"
     export MODEL_PATH="./model/llm/"
     export MODEL_SOURCE="s3"
+    export HF_TOKEN_SOURCE="local"
+    export HF_TOKEN="YOUR_TOKEN"
     
     
     ```
