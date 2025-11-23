@@ -81,7 +81,7 @@ def generate_pls_from_model(abstract: str, prompt_template: str) -> str:
 
     if llama_model is None or llama_tokenizer is None:
         print("model or tokenizer not loaded.")
-        raise HTTPException(status_code=500, detail="model or tokenizer not loaded.")
+        raise HTTPException(status_code=500, detail="Model or tokenizer not loaded.")
    
     # 1. Create the Llama 3 Instruct chat message format
     # The prompt template is the "user" message.

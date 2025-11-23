@@ -25,8 +25,3 @@ class GenerateResponse(BaseModel):
     status: str
     pls: str
     scores: AllScores
-
-class ErrorResponse(BaseModel):
-    """The standard error response model."""
-    status: str
-    message: str

@@ -3,7 +3,7 @@ import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from core.model_loader import load_ai_model, generate_pls_from_model, download_from_s3
-from core.class_model import GenerateRequest, GenerateResponse, ErrorResponse, ReadabilityScores, AllScores
+from core.class_model import GenerateRequest, GenerateResponse, AllScores
 from core.scoring import get_scores
 from core.classifier_model import classify_text, load_classifier_model
 from core.prompt_template import PROMPT_TEMPLATE
@@ -54,15 +54,13 @@ app.add_middleware(
 # --- 6. API Endpoint ---
 
 @app.get("/get_model_name",
-         response_model=str, 
-          responses={500: {"model": ErrorResponse}})
+         response_model=str)
 async def get_model_name():
     return model_name
 
 
 @app.post("/generate_pls", 
-          response_model=GenerateResponse, 
-          responses={500: {"model": ErrorResponse}})
+          response_model=GenerateResponse)
 async def generate_pls(request: GenerateRequest):
     """
     Generates a Plain Language Summary (PLS) from an abstract and evaluates it.
@@ -121,7 +119,7 @@ async def generate_pls(request: GenerateRequest):
         # Return a structured error response
         raise HTTPException(
             status_code=500, 
-            detail={"status": "error", "message": f"An internal error occurred: {e}"}
+            detail=f"An internal error occurred: {e}"
         )
 
 

@@ -44,7 +44,7 @@ def classify_text(text: str):
         
     if classifier_model is None or classifier_tokenizer is None:
         print("model or tokenizer not loaded.")
-        raise HTTPException(status_code=500, detail="model or tokenizer not loaded.")
+        raise HTTPException(status_code=500, detail="Model or tokenizer not loaded.")
 
     
     inputs = classifier_tokenizer(

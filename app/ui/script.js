@@ -23,7 +23,7 @@ function init() {
 
 async function loadModelName() {
     const response = await getModelName();
-    if (response.status == undefined) { // Success
+    if (response.status_code == undefined) { // Success
         introTextParagraph.innerText = response + ', ';
 
     } else { // Failure
@@ -40,7 +40,9 @@ async function getModelName(){
         }
     });
     if (!response.ok) {
-        return {status: response.status, message: response.statusText};
+        console.log(response);
+        const errorData = await response.json(); // Parse the error detail
+        return {status: response.status, message: errorData.detail};
     }
     const data = await response.json();
     return data;
@@ -81,7 +83,9 @@ async function callGeneratePLS(inputText) {
         body: JSON.stringify({text: inputText})
     });
     if (!response.ok) {
-        return {status: response.status, message: response.statusText};
+        console.log(response);
+        const errorData = await response.json(); // Parse the error detail
+        return {status: response.status, message: errorData.detail};
     }
     const data = await response.json();
     return data;
