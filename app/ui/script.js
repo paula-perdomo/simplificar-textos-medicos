@@ -1,4 +1,4 @@
-const apiUrl = 'http://127.0.0.1:8000'
+const apiUrl = 'http://ec2-3-146-126-28.us-east-2.compute.amazonaws.com:8000'
 const generateEnpoint = '/generate_pls'
 const modelNameEndpoint = '/get_model_name'
 

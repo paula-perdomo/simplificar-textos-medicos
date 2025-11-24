@@ -78,7 +78,7 @@ async def generate_pls(request: GenerateRequest):
         pred, prob = classify_text(abstract_text)
         print("Text classification: ", pred, " Probability of class 1 (PLS): ", prob)
         if pred == 'PLS':
-            raise HTTPException(status_code=422, detail="Input text cannot be PLS.")
+            raise HTTPException(status_code=422, detail="Input text is PLS already.")
 
         
         # --- Step 2: Generate PLS (Simulated) ---

@@ -1,0 +1,29 @@
+name: Deploy to EC2 with CodeDeploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # Change to your desired region
+
+      - name: Create CodeDeploy Deployment
+        id: deploy
+        run: |
+          aws deploy create-deployment \
+            --application-name your-codedeploy-application-name \
+            --deployment-group-name your-codedeploy-deployment-group-name \
+            --deployment-config-name CodeDeployDefault.OneAtATime \
+            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
