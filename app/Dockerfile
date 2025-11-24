@@ -11,7 +11,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Set S3 credentials
 ENV S3_BUCKET_NAME="maia-grupo-9"
-ENV S3_PREFIX="/models/sft2-merged/"
+ENV S3_PREFIX="models/sft2-merged/"
 ENV S3_REGION="us-east-2"
 ENV MODEL_NAME="Llama-3.2-3B-Instruct"
 ENV MODEL_PATH="./model/llm/"

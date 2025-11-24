@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PLS Generator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+
+    <link rel="stylesheet" href="pico.jade.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="container">
+    <button id="theme-button" title="Toggle Theme" class="secondary">☀️</button>
+    <h1>PLS Generator</h1>
+    <p>
+    This tool employs <span id="intro-text">an </span>
+    instruction-tuned large language model, to generate plain language summaries
+    of provided medical texts. The objective is to analyze and compare the
+    readability scores of the original text against the generated summary.
+    </p>
+    <div class="grid">
+        <label>
+            Input
+            <textarea id="input-area" rows="10"></textarea>
+        </label>
+        <label>
+            Output
+            <textarea id="output-area" rows="10" readonly></textarea>
+        </label>
+    </div>
+    <button id="generate-button">Generate Summary</button>
+    <br>
+    <br>
+    <table id="scores-table" class="striped">
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Original</th>
+                <th>Generated</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>
+                <span data-tooltip="Measures readability based on letter and word&#10;counts per sentence.">
+                    Coleman-Liau Index (CLI)
+                </span>
+            </td><td></td><td></td></tr>
+            <tr><td>
+                <span data-tooltip="It measures how easy or difficult a text is to&#10;understand based on average sentence length&#10;and average syllables per word.&#10;Ranging from 0–100, higher scores mean simpler&#10;content, while lower scores indicate more&#10;complex writing.">
+                    Flesch Reading Ease (FRE)
+                </span>
+            </td><td></td><td></td></tr>
+            <tr><td>
+                <span data-tooltip="Estimates the number of years of formal&#10;education needed to understand the text.">
+                    Gunning Fog Index (GFI)
+                </span>
+            </td><td></td><td></td></tr>
+            <tr><td>
+                <span data-tooltip="Estimates readability by counting polysyllabic.">
+                    SMOG readability formula (SMOGIndex)
+                </span>
+            </td><td></td><td></td></tr>
+            <tr><td>
+                <span data-tooltip="Estimates the U.S. school grade level needed&#10;to comprehend the text.">
+                    Flesch-Kincaid Grade Level (FKGL)
+                </span>
+            </td><td></td><td></td></tr>
+            <tr><td>
+                <span data-tooltip="Assesses readability by comparing text words&#10;against a list of familiar words.">
+                    Dale-Chall Readability Score (DCRS)
+                </span>
+            </td><td></td><td></td></tr>
+        </tbody>
+    </table>
+    
+    <h2>Readability Score Interpretation</h2>
+    <p>
+        Readability formulas provide a numerical score to estimate the difficulty
+        of a text. These scores are interpreted using two different systems:
+        grade-level-based scores and the Flesch Reading Ease scale.
+    </p>
+    <h3>Interpretation for Grade-Level-Based Metrics</h3>
+    <p>
+    The following models output a score that directly estimates the
+    <strong>U.S. grade level</strong> required to understand a text:
+    </p>
+    <ul>
+        <li>Coleman-Liau Index (CLI)</li>
+        <li>Gunning Fog Index (GFI)</li>
+        <li>SMOG Index</li>
+        <li>Flesch-Kincaid Grade Level (FKGL)</li>
+        <li>Dale-Chall Readability Score (DCRS)</li>
+    </ul>
+    <p>The table below provides a general guide for interpreting this grade-level score.</p>
+    <table>
+        <thead>
+            <tr>
+            <th>Score <span data-tooltip="Lower is better">↓</span></th>
+            <th>School level</th>
+            <th>Student age range</th>
+            <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            <td>0-1</td>
+            <td>Pre-kindergarten - 1st grade</td>
+            <td>3-7</td>
+            <td>Basic level for those who just learn to read books.</td>
+            </tr>
+            <tr>
+            <td>1-5</td>
+            <td>1st grade - 5th grade</td>
+            <td>7-11</td>
+            <td>Very easy to read.</td>
+            </tr>
+            <tr>
+            <td>5-8</td>
+            <td>5th grade - 8th grade</td>
+            <td>11-14</td>
+            <td>A text is considered ideal for average readers.</td>
+            </tr>
+            <tr>
+            <td>8-11</td>
+            <td>8th grade - 11th grade</td>
+            <td>14-17</td>
+            <td>Fairly difficult to read.</td>
+            </tr>
+            <tr>
+            <td>11 and above</td>
+            <td>11th grade - college</td>
+            <td>17 and above</td>
+            <td>Too hard to read for the majority of readers.</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>Interpretation for Flesch Reading Ease (FRE)</h3>
+    <p>
+    Unlike the other metrics, the Flesch Reading Ease (FRE) operates on a
+    <strong>0–100 point scale</strong>. On this scale, a
+    <strong>higher score indicates the text is easier to read</strong>. This
+    score is then mapped to a corresponding readability level as follows:
+    </p>
+    <table>
+        <thead>
+            <tr>
+            <th>FRE Score <span data-tooltip="Higher is better">↑</span></th>
+            <th>Readability Level</th>
+            <th>Grade Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            <td>90–100</td>
+            <td>Very Easy</td>
+            <td>5th grade</td>
+            </tr>
+            <tr>
+            <td>70–89</td>
+            <td>Easy</td>
+            <td>6th–8th grade</td>
+            </tr>
+            <tr>
+            <td>60–69</td>
+            <td>Plain English</td>
+            <td>High school</td>
+            </tr>
+            <tr>
+            <td>50–59</td>
+            <td>Fairly Difficult</td>
+            <td>College</td>
+            </tr>
+            <tr>
+            <td>30–49</td>
+            <td>Difficult</td>
+            <td>University</td>
+            </tr>
+            <tr>
+            <td>0–29</td>
+            <td>Very Confusing</td>
+            <td>Graduate level</td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+body {
+    padding: 1rem;
+}
+
+#theme-button {
+    float: right;
+    background: none;
+}
+
+#scores-table th:nth-of-type(2),
+#scores-table td:nth-of-type(2),
+#scores-table th:nth-of-type(3),
+#scores-table td:nth-of-type(3) {
+    text-align: right;
+}
+
+[data-tooltip]::before {
+    white-space: pre;
+    max-width: 20rem;
+}

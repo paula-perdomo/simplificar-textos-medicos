@@ -73,7 +73,7 @@ The following environment variables are used to configure the application:
 1.  **Build the Docker image:**
 
     ```bash
-    docker build -t biomedical-text-simplification --secret id=hf_token,src=$HOME/.huggingface/token .
+    docker build -t biomedical-text-simplification:latest --secret id=hf_token,src=$HOME/.huggingface/token .
     ```
 
 2.  **Run the Docker container:**
