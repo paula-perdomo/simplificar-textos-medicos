@@ -53,6 +53,10 @@ app.add_middleware(
 
 # --- 6. API Endpoint ---
 
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
 @app.get("/get_model_name",
          response_model=str)
 async def get_model_name():
