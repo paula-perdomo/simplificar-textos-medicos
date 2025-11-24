@@ -5,7 +5,9 @@ const modelNameEndpoint = '/get_model_name'
 
 const themeButton = document.getElementById('theme-button');
 const generateButton = document.getElementById('generate-button');
+const resetButton = document.getElementById('reset-button');
 const scoresTable = document.getElementById('scores-table');
+const inputArea = document.getElementById('input-area');
 const outputArea = document.getElementById('output-area');
 const introTextParagraph = document.getElementById('intro-text');
 
@@ -17,6 +19,7 @@ window.onload = init;
 function init() {
     themeButton.addEventListener('click', toggleTheme);
     generateButton.addEventListener('click', generateSummary); 
+    resetButton.addEventListener('click', resetState); 
     loadModelName();
 
 }
@@ -51,14 +54,22 @@ async function getModelName(){
 async function generateSummary() {
     generateButton.setAttribute('aria-busy', 'true');
     generateButton.disabled = true;
+    resetButton.disabled = true;
     generateButton.innerText = 'Generating...';
     
-    const inputArea = document.getElementById('input-area');
     inputArea.disabled = true ;
     outputArea.removeAttribute('aria-invalid');
 
+    let response;
+    if (inputArea.value.length >= 100) {
+        response = await callGeneratePLS(inputArea.value);
+    } else {
+        response = {
+            status: 'Invalid Input',
+            message: 'Input must be at least 100 characters.'
+        }
+    }
 
-    const response = await callGeneratePLS(inputArea.value);
     if (response.pls != undefined) { // Success
         outputArea.value = response.pls;
         printScoresColumn(response.scores.original, 1);
@@ -70,6 +81,7 @@ async function generateSummary() {
 
     generateButton.setAttribute('aria-busy', 'false');
     generateButton.disabled = false;
+    resetButton.disabled = false;
     generateButton.innerText = 'Generate Summary';
     inputArea.disabled = false;
 }
@@ -81,7 +93,11 @@ async function callGeneratePLS(inputText) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({text: inputText})
-    });
+    }).catch(err => ({isException: true, err}));
+    if (response.isException) {
+        console.log(response);
+        return {status: response.err.name, message: response.err.message};
+    }
     if (!response.ok) {
         console.log(response);
         const errorData = await response.json(); // Parse the error detail
@@ -101,6 +117,10 @@ function printScoresColumn(scores, column) {
 }
 
 function printScoreCell(score, row, column, isFRE = false) {
+    if (!score) {
+        scoresTable.rows[row].cells[column].innerHTML = '';
+        return;
+    }
     tooltip = isFRE ? getFREGradeLevel(score) : getScoreGradeLevel(score);
     const html = `<span data-tooltip="${tooltip}">${score.toFixed(3)}</span>`;
     scoresTable.rows[row].cells[column].innerHTML = html; 
@@ -121,6 +141,15 @@ function getFREGradeLevel(score) {
     if (score < 70) return 'High school';
     if (score < 90) return '6th–8th grade';
     else return '5th grade';
+}
+
+function resetState() {
+    inputArea.value = '';
+    outputArea.value = '';
+    outputArea.removeAttribute('aria-invalid');
+    blankScores = { CLI: null, FRE: null, GFI: null, SMOG: null, FKGL: null, DCRS: null };
+    printScoresColumn(blankScores, 1);
+    printScoresColumn(blankScores, 2);
 }
 
 function toggleTheme() {
