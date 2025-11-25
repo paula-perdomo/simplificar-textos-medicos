@@ -71,7 +71,7 @@ Las siguientes variables de entorno se utilizan para configurar la aplicación:
 ### Usando AWS
 
 #### Para instalación en EC2 de la API:
-1. Crear un EC2 con imagen Ubuntu 20.04 x64, 70 GB de disco y tier g4dn.xlarge
+1. Crear un EC2 con imagen Deep Learning OSS Nvidia Driver AMI GPU PyTorch Ubuntu 22.04 x64, 70 GB de disco y tier g4dn.xlarge
 2. Conectarse por medio de ssh a la instancia
 3. Seguir los siguientes comandos:
   ```bash
@@ -92,7 +92,7 @@ Las siguientes variables de entorno se utilizan para configurar la aplicación:
   cd biomedical-text-simplification/app/
   git lfs pull
   sudo docker build -t biomedical-text-simplification:latest .
-  sudo docker run -p 8000:8000 biomedical-text-simplification
+  sudo docker run --gpus all -p 8000:8000 biomedical-text-simplification
   ```
 4. Exponer el puerto 8000 a todo ipv4
 
@@ -114,7 +114,7 @@ Las siguientes variables de entorno se utilizan para configurar la aplicación:
 2.  **Ejecutar el contenedor de Docker:**
 
     ```bash
-    docker run -p 8000:8000 biomedical-text-simplification
+    docker run --gpus all -p 8000:8000 biomedical-text-simplification
     ```
 
 ### Ejecutando Localmente

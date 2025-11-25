@@ -43,7 +43,7 @@ Adicionalmente puede seguir estos pasos para el despliegue.
 6. La imagen docker va a quedar corriendo en tu máquina en `http://127.0.0.1:8000/docs`
 
 #### Para instalación en EC2 de la API:
-1. Crear un EC2 con imagen Ubuntu 20.04 x64, 70 GB de disco y tier g4dn.xlarge
+1. Crear un EC2 con imagen Deep Learning OSS Nvidia Driver AMI GPU PyTorch Ubuntu 22.04 x64, 70 GB de disco y tier g4dn.xlarge
 2. Conectarse por medio de ssh a la instancia
 3. Seguir los siguientes comandos:
   ```bash
@@ -64,7 +64,7 @@ Adicionalmente puede seguir estos pasos para el despliegue.
   cd biomedical-text-simplification/app/
   git lfs pull
   sudo docker build -t biomedical-text-simplification:latest .
-  sudo docker run -p 8000:8000 biomedical-text-simplification
+  sudo docker run --gpus all -p 8000:8000 biomedical-text-simplification
   ```
 4. Exponer el puerto 8000 a todo ipv4
 
