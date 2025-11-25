@@ -68,10 +68,12 @@ Adicionalmente puede seguir estos pasos para el despliegue.
   ```
 4. Exponer el puerto 8000 a todo ipv4
 
-#### Para instalación de pagina web:
+#### Para instalación de pagina web en S3:
 
+1. Crear S3 bucket. 
 1. Actualizar el valor de la variable `apiUrl` en el archivo `script.js` con la direccion url donde se encuentra alojada la api.
-2. Copiar los archivos de la carpeta [ui](https://github.com/paula-perdomo/simplificar-textos-medicos/tree/main/app/ui) en un host y configurarlo como pagina estatica.
+2. Copiar los archivos de la carpeta [ui](https://github.com/paula-perdomo/simplificar-textos-medicos/tree/main/app/ui) en la raiz del bucket.
+3. Configurarlo como pagina estatica.
 
 
 ## Credenciales
