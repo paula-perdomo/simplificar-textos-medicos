@@ -38,9 +38,9 @@ Adicionalmente puede seguir estos pasos para el despliegue.
 1. Instalar Docker Desktop
 2. Clonar el repositorio
 3. Abrir un command prompt en la carpeta donde se instaló el repositorio
-4. Utilizar el comando  `docker build -f Dockerfile -t app_cyberbullying:latest .`
-5. Utilizar el comando `docker run -p 8501:8501 -it -e PORT=8501 app_cyberbullying`
-6. La imagen docker va a quedar corriendo en tu máquina
+4. Utilizar el comando  `docker build -t biomedical-text-simplification:latest .`
+5. Utilizar el comando `docker run -p 8000:8000 biomedical-text-simplification`
+6. La imagen docker va a quedar corriendo en tu máquina en `http://127.0.0.1:8000/docs`
 
 #### Para instalación en EC2 de la API:
 1. Crear un EC2 con imagen Ubuntu 20.04 x64, 70 GB de disco y tier g4dn.xlarge
