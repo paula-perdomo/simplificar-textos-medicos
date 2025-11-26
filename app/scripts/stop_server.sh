@@ -1,5 +1,5 @@
 #!/bin/bash
-pkill -f uvicorn
+sudo pkill -f uvicorn
 
 sudo docker stop biomedical-text-simplification
-sudo docker rm biomedical-text-simplification
+sudo docker rmi biomedical-text-simplification -f
