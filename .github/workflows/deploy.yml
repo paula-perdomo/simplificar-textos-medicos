@@ -38,4 +38,5 @@ jobs:
           --application-name maia-grupo-9 \
           --deployment-group-name maia-grupo-9-staging \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
+          --github-location repository=${{ github.repository }},commitId=${{ github.sha }} \
+          --file-exists-behavior OVERWRITE
