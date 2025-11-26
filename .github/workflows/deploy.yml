@@ -35,7 +35,7 @@ jobs:
         id: deploy
         run: |
           aws deploy create-deployment \
-          --application-name maia-grupo-9 \ 
+          --application-name maia-grupo-9 \
           --deployment-group-name maia-grupo-9-staging \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
