@@ -3,11 +3,12 @@ os: linux
 files:
   - source: /
     destination: /home/ubuntu/simplificar-textos-medicos
+    file_exists_behavior: OVERWRITE
 hooks:
   ApplicationStop:
     - location: scripts/stop_server.sh
       timeout: 60
-  BeforeInstall:
+  AfterInstall:
     - location: scripts/install_dependencies.sh
       timeout: 300
       runas: root
