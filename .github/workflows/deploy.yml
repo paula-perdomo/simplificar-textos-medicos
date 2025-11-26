@@ -7,6 +7,7 @@ on:
 env:
   
   AWS_REGION : "us-east-2" #Change to reflect your Region
+  S3_BUCKET_NAME : "maia-grupo-9"
   
 # Permission can be added at job level or workflow level    
 permissions:
@@ -40,3 +41,8 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --github-location repository=${{ github.repository }},commitId=${{ github.sha }} \
           --file-exists-behavior OVERWRITE
+          
+      # Syncs the 'app/ui' folder to the root of your S3 bucket
+      - name: Deploy Static Site to S3
+        run: |
+          aws s3 sync ./app/ui s3://${{ env.S3_BUCKET_NAME }}
