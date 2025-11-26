@@ -8,6 +8,33 @@ Se entrenó un modelo Llama fine-tuned con técnica LoRA para la tarea de genera
 
 Con estos modelos, se creó una API donde en un primer paso se utiliza el clasificador que define si el texto de entrada es simplificado o técnico, and si es este último, retorna el texto simplificado (utilizando el modelo fine-tuned). Junto con el texto simplificado generado se emiten las medidas de legibilidad del texto. Esta herramienta fue creada teniendo en mente al personal médico como usuario final.
 
+## Estructura de Carpetas
+
+```
+/
+├── app/
+├── data/
+├── models/
+├── notebooks/
+├── scripts/
+├── appspec.yml
+├── Articulo_final.pdf
+├── LICENSE
+└── README.md
+```
+
+## Explicación de Carpetas y Archivos
+
+- **app/**: Contiene el código fuente de la aplicación principal, incluyendo la API de FastAPI, la interfaz de usuario y la lógica del modelo.
+- **data/**: Contiene notebooks y datos relacionados con la exploración y el procesamiento de los datos utilizados en el proyecto.
+- **models/**: Almacena los modelos de machine learning entrenados, como el clasificador de texto. El modelo utilizado para inferencias en la aplicacion se encuentra en [s3](s3://maia-grupo-9/models/sft2-merged/).
+- **notebooks/**: Jupyter notebooks utilizados para la experimentación, análisis de resultados y generación de reportes de los diferentes modelos.
+- **scripts/**: Contiene scripts de utilidad el ci/cd en AWS.
+- **appspec.yml**: Archivo de especificación de la aplicación para AWS CodeDeploy, utilizado para automatizar el despliegue.
+- **Articulo_final.pdf**: Documento final del articulo cientifico que describe el proyecto.
+- **LICENSE**: Archivo que contiene la licencia del proyecto.
+- **README.md**: Documentación principal del proyecto.
+
 ### Enlaces relevantes
 
 - Pagina web: [PLS Generator](http://maia-grupo-9.s3-website.us-east-2.amazonaws.com/)
