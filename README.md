@@ -1,12 +1,30 @@
-# Simplificación de Textos Médicos
+# Universidad de Los Andes
 
-Este es el proyecto final de grado de la maestría en inteligencia artificial (MaIA) de la Universidad de los Andes.
+## Título del proyecto
+
+### Simplificación de textos médicos: Evaluación de legibilidad, relevancia y factualidad en PLS generados con Modelos de Lenguaje Abiertos Entrenados y Modelos Comerciales. Desarrollo y despliegue de una herramienta web para profesionales de la salud.
+
+## Descripción
+
+Desarrollo y despliegue de una herramienta web diseñada para profesionales de la salud, con el objetivo de simplificar textos médicos complejos y evaluar su calidad utilizando modelos avanzados de procesamiento de lenguaje natural.
+
+## Integrantes
+
+**Alberto Echeverria** (a.echeverriaz@uniandes.edu.co)
+
+**Christian Palma** (c.palma@uniandes.edu.co)
+
+**Paula Perdomo** (p.perdomoe@uniandes.edu.co)
+
+**Gina Rios** (g.riosr@uniandes.edu.co)
+
+*Estudiantes de Maestría en Inteligencia Artificial, Universidad de los Andes, Bogotá, Colombia.*
 
 ## Resumen
 
 Se entrenó un modelo Llama fine-tuned con técnica LoRA para la tarea de generación de resumenes simplificados de texto médico. Además, se entrenó un clasificador binario para clasificar si un texto es técnico o si ya ha sido simplificado. Finalmente, se buscó desarrollar un sistema robusto para evaluar dichos modelos, por lo que se compararon diferentes medidas de legibilidad como SMOG, FKG y FRE; también se midió la relevancia y factualidad con BERTScore y AlignScore, respectivamente.
 
-Con estos modelos, se creó una API donde en un primer paso se utiliza el clasificador que define si el texto de entrada es simplificado o técnico, and si es este último, retorna el texto simplificado (utilizando el modelo fine-tuned). Junto con el texto simplificado generado se emiten las medidas de legibilidad del texto. Esta herramienta fue creada teniendo en mente al personal médico como usuario final.
+Con el modelo Llama-3.2-3B-Instruct entrenado, se creó una API donde en un primer paso se utiliza el clasificador que define si el texto de entrada es simplificado o técnico, y si es este último, retorna el texto simplificado (utilizando el modelo fine-tuned). Junto con el texto simplificado generado se emiten las medidas de legibilidad del texto. Esta herramienta fue creada teniendo en mente al personal médico como usuario final.
 
 ## Estructura de Carpetas
 
