@@ -86,7 +86,7 @@ def generate_pls_from_model(abstract: str, prompt_template: str) -> str:
     # 1. Create the Llama 3 Instruct chat message format
     # The prompt template is the "user" message.
     messages = [
-        {"role": "user", "content": prompt_template.format(text=abstract)}},
+        {"role": "user", "content": prompt_template.format(text=abstract)},
     ]
 
     # 2. Tokenize the input using the chat template
