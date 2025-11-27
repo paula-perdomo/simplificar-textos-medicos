@@ -41,6 +41,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     git \
     build-essential \
+    cargo \
     && rm -rf /var/lib/apt/lists/*
 
 # 5. Fix Python Alias
