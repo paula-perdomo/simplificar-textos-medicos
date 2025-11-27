@@ -12,8 +12,8 @@ from core.text_cleaning import clean_text
 from huggingface_hub import login
 
 # Load model and secrets
-model_name = "Llama-3.2-3B-Instruct"
-model_path = "meta-llama/Llama-3.2-3B-Instruct"
+model_name = "Gemma-2-2B-Instruct"
+model_path = "google/gemma-2-2b-it"
 model_source = os.environ.get('MODEL_SOURCE')
 
 if model_source == 's3':
@@ -33,6 +33,7 @@ elif model_source == 'huggingface':
 if os.environ.get('MODEL_PATH'):
     model_name = os.environ.get('MODEL_NAME')
     model_path = os.environ.get('MODEL_PATH')
+    print("Loading model from: ", model_path)
 
 
 load_ai_model(model_path)
