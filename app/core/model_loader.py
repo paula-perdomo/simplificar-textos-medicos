@@ -104,14 +104,13 @@ def generate_pls_from_model(abstract: str, prompt_template: str) -> str:
     gen_config = GenerationConfig(    
         min_new_tokens=500,    
         max_new_tokens=900,
-        temperature=0.3,
-        top_p=0.9,        
         do_sample=False,
         repetition_penalty=1.0,        
         no_repeat_ngram_size=0,
 
         eos_token_id=llama_tokenizer.eos_token_id,
         pad_token_id=llama_tokenizer.pad_token_id,
+        bos_token_id=llama_tokenizer.bos_token_id
     )
 
 
